@@ -1,4 +1,4 @@
-# Active Directory Security & SOAR Automation Project
+# Active-Directory-Threat-Monitoring-Lab
 
 ## Overview
 
