@@ -1,7 +1,5 @@
 # Active Directory Threat Monitoring Lab (Splunk + MITRE ATT&CK)
 
-🔗 **Live project write-up:** [defendwithmisbah.vercel.app/projects/active-directory-soar-automation](https://defendwithmisbah.vercel.app/projects/active-directory-soar-automation)
-
 ## Overview
 
 I built this project to simulate a real-world SOC Level 1 environment where identity-based threats are detected, investigated, and responded to using SIEM + SOAR automation. It demonstrates how SOC analysts monitor Active Directory for identity threats using Splunk correlation and MITRE ATT&CK-aligned detections, with Shuffle SOAR handling automated response while keeping analysts in control. The project combines Active Directory, Splunk, and Shuffle.io (SOAR) to show how SOC analysts handle unauthorized login attempts with human-in-the-loop decision making.
