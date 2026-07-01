@@ -1,8 +1,10 @@
-# Active Directory Security & SOAR Automation Project
+# Active Directory Threat Monitoring Lab (Splunk + MITRE ATT&CK)
+
+🔗 **Live project write-up:** [defendwithmisbah.vercel.app/projects/active-directory-soar-automation](https://defendwithmisbah.vercel.app/projects/active-directory-soar-automation)
 
 ## Overview
 
-I built this project to simulate a real-world SOC Level 1 environment where identity-based threats are detected, investigated, and responded to using SIEM + SOAR automation. The project combines Active Directory, Splunk, and Shuffle.io (SOAR) to demonstrate how SOC analysts handle unauthorized login attempts with human-in-the-loop decision making.
+I built this project to simulate a real-world SOC Level 1 environment where identity-based threats are detected, investigated, and responded to using SIEM + SOAR automation. It demonstrates how SOC analysts monitor Active Directory for identity threats using Splunk correlation and MITRE ATT&CK-aligned detections, with Shuffle SOAR handling automated response while keeping analysts in control. The project combines Active Directory, Splunk, and Shuffle.io (SOAR) to show how SOC analysts handle unauthorized login attempts with human-in-the-loop decision making.
 
 This lab reflects how modern SOC teams automate repetitive tasks while keeping analysts in control of critical actions.
 
@@ -13,17 +15,19 @@ This lab reflects how modern SOC teams automate repetitive tasks while keeping a
 ##  What I Built
 
 - A Windows Active Directory domain environment
-- Splunk-based detection for unauthorized login attempts
+- Splunk-based detection for unauthorized login attempts, mapped to MITRE ATT&CK techniques
 - SOAR automation using Shuffle.io
 - Automated notifications via Slack & Email
 - Conditional response to disable compromised user accounts
+- Rollback capability to safely reverse actions taken on false positives
 
 ##  SOC Use Case
 
 - Unauthorized / suspicious login attempts
-- Identity-based threat detection
+- Identity-based threat detection mapped to MITRE ATT&CK (T1078 - Valid Accounts, T1110 - Brute Force)
 - Analyst-approved automated response
 - Account compromise prevention
+- False positive handling with rollback
 
 ---
 
@@ -54,6 +58,7 @@ Shuffle sends:
 **If the analyst selects NO:**
 - No action is taken
 - The alert is logged for monitoring
+- If the account was disabled and later confirmed as a false positive, a rollback action re-enables it
 
 > This ensures fast response with analyst control, reducing risk from false positives.
 
@@ -62,12 +67,14 @@ Shuffle sends:
 ##  Tools & Technologies
 
 - **Windows Server 2025** - Domain Controller and Active Directory
-- **Splunk Enterprise** - SIEM for log collection and alerting
-- **Shuffle.io** - SOAR platform for automation orchestration
+- **Splunk Enterprise** - SIEM for log collection, correlation, and alerting
+- **MITRE ATT&CK Framework** - Mapping detections to known adversary techniques
+- **Shuffle.io (Shuffle SOAR)** - SOAR platform for automation orchestration
 - **Active Directory** - Identity and access management
 - **Slack** - Real-time SOC alerting and notifications
 - **Email** - Analyst approval workflow
 - **Windows 10** - Target endpoint for security event generation
+- **Splunk Universal Forwarder** - Forwarding Windows Security event logs to Splunk
 
 ---
 
@@ -77,8 +84,10 @@ This project demonstrates my ability to:
 
 - Think like a SOC analyst
 - Integrate SIEM + SOAR
+- Map detections to MITRE ATT&CK techniques
 - Automate real SOC workflows
 - Apply human-in-the-loop security automation
+- Handle false positives safely with rollback
 - Build enterprise-style security labs
 
 ---
@@ -157,7 +166,8 @@ On my Windows 10 target machine, I installed the Splunk Universal Forwarder to s
 I created correlation searches in Splunk to detect unauthorized login attempts. These searches monitor for patterns like multiple failed login attempts, login attempts from unusual locations, or login attempts outside business hours. When triggered, these searches generate alerts that will be sent to Shuffle.io.
 
 **Detection rules created:**
-- Correlation searches for failed authentication attempts
+- Correlation searches for failed authentication and brute-force login attempts
+- Mapped detections to MITRE ATT&CK techniques (T1078 - Valid Accounts, T1110 - Brute Force)
 - Configured alert thresholds and conditions
 - Set up webhook actions to send alerts to Shuffle.io
 - Tested detection rules with simulated login attempts
@@ -186,12 +196,13 @@ I deployed Shuffle.io as my SOAR platform. Shuffle.io would receive alerts from 
 This is the core of the project. I built a complete automation workflow in Shuffle.io that implements the human-in-the-loop pattern. The workflow receives Splunk alerts, sends notifications, waits for analyst approval, and then takes conditional action based on the analyst's decision.
 
 **Workflow components:**
-- Created workflow to receive Splunk webhook alerts
+- Created workflow to receive Splunk webhook alerts, enriched with MITRE ATT&CK context
 - Added Slack notification step to alert SOC channel
 - Implemented email step to request analyst approval
 - Added conditional logic based on analyst response
 - Configured Active Directory action to disable user accounts
 - Set up confirmation notifications after actions are taken
+- Added a rollback action to re-enable accounts disabled due to false positives
 
 ![SOAR Workflow](./public/Active-Directory/shuffle-automation.png)
 ![Slack Notifications](./public/Active-Directory/notification-in-slack.png)
@@ -265,6 +276,7 @@ Finally, I documented the complete workflow, created runbooks for SOC analysts, 
 - SOC Level 1 Incident Response
 - SIEM Alert Handling
 - SOAR Automation
+- MITRE ATT&CK Threat Mapping
 
 ### Identity & Access Management
 - Active Directory Security
@@ -279,8 +291,8 @@ The project architecture consists of:
 
 1. **Windows Server 2025 Domain Controller** - Manages Active Directory domain and user accounts
 2. **Windows 10 Target Machine** - Generates security events and forwards logs to Splunk
-3. **Splunk Enterprise** - SIEM platform that detects unauthorized login attempts
-4. **Shuffle.io SOAR Platform** - Orchestrates the automation workflow
+3. **Splunk Enterprise** - SIEM platform that correlates events and detects unauthorized login attempts, mapped to MITRE ATT&CK techniques
+4. **Shuffle.io SOAR Platform** - Orchestrates the analyst-approved response and rollback workflow
 5. **Slack** - Real-time notification channel for SOC team
 6. **Email** - Analyst approval mechanism
 
@@ -306,9 +318,10 @@ Through this hands-on project, I gained practical experience in:
 
 - **Active Directory Administration** - Setting up and managing a Windows domain environment
 - **SIEM Deployment** - Configuring Splunk for security event monitoring and alerting
+- **Threat Mapping** - Aligning detections to MITRE ATT&CK techniques (T1078, T1110)
 - **SOAR Automation** - Building human-in-the-loop automation workflows with Shuffle.io
 - **Security Integration** - Connecting multiple security tools into a cohesive workflow
-- **Incident Response** - Understanding real-world SOC analyst workflows and decision-making processes
+- **Incident Response** - Understanding real-world SOC analyst workflows and decision-making processes, including safe rollback of false positives
 
 This project demonstrates my ability to build, monitor, and defend enterprise environments as a SOC Level 1 Analyst while implementing modern security automation practices.
 
@@ -318,6 +331,7 @@ This project demonstrates my ability to build, monitor, and defend enterprise en
 
 - [Splunk Enterprise Documentation](https://docs.splunk.com/)
 - [Shuffle.io Documentation](https://shuffler.io/docs)
+- [MITRE ATT&CK Framework](https://attack.mitre.org/)
 - [Active Directory Security Best Practices](https://learn.microsoft.com/en-us/windows-server/identity/ad-ds/plan/security-best-practices)
 
 ---
